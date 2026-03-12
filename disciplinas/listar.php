@@ -1,0 +1,43 @@
+<?php
+session_start();
+if(!isset($_SESSION['perfil']) || $_SESSION['perfil'] != 'Admin'){
+    header("Location: ../index.php");
+    exit();
+}
+
+require_once "../config/db.php";
+
+$stmt = $pdo->query("SELECT * FROM disciplinas ORDER BY nome_disciplina ASC");
+$disciplinas = $stmt->fetchAll();
+?>
+<link rel="stylesheet" href="../global.css">
+<div class="navbar">
+    <img src="../img/logo-ipca.png" alt="IPCA Logo">
+    <h1>Painel de Administração - IPCA</h1>
+    <div style="margin-left:auto;">
+        <a href="../index.php">Home</a>
+        <a href="../auth/logout.php">Logout</a>
+    </div>
+</div>
+<h2>Lista de Disciplinas</h2>
+<a href="adicionar.php">Adicionar Disciplina</a>
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Nome da Disciplina</th>
+        <th>Sigla</th>
+        <th>Ações</th>
+    </tr>
+    <?php foreach($disciplinas as $disciplina): ?>
+    <tr>
+        <td><?= $disciplina['id'] ?></td>
+        <td><?= htmlspecialchars($disciplina['nome_disciplina']) ?></td>
+        <td><?= htmlspecialchars($disciplina['sigla']) ?></td>
+        <td>
+            <a href="editar.php?id=<?= $disciplina['id'] ?>">Editar</a> | 
+            <a href="eliminar.php?id=<?= $disciplina['id'] ?>" onclick="return confirm('Tem certeza?')">Apagar</a>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+<button type="button" onclick="window.location.href='../admin/dashboard.php'">Voltar</button>

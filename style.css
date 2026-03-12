@@ -1,0 +1,143 @@
+/* Definições de Cores e Variáveis */
+:root {
+    --ipca-green: #006633;
+    --ipca-blue: #0099cc;
+    --ipca-light-gray: #f4f4f4;
+    --ipca-dark: #333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fundo com a imagem do IPCA */
+body, html {
+    height: 100%;
+}
+
+.page-wrapper {
+    background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), 
+                url('img/Ipca-Barcelos.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Cartão de Autenticação Centralizado */
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    width: 100%;
+    max-width: 850px; /* Largura maior para imitar o layout horizontal da imagem */
+    border-radius: 4px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    overflow: hidden;
+    padding: 40px;
+}
+
+/* Cabeçalho do Cartão (Logo) */
+.auth-header {
+    text-align: left;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+}
+
+.logo-img {
+    height: 60px;
+    margin-bottom: 10px;
+}
+
+.auth-header-subtitle {
+    color: var(--ipca-blue);
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* Grid para separar Login de Chave Móvel (opcional, como na imagem) */
+.auth-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Divide em dois como na foto */
+    gap: 40px;
+}
+
+@media (max-width: 768px) {
+    .auth-body { grid-template-columns: 1fr; }
+}
+
+/* Formulários e Inputs */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid #ccc;
+    background-color: #e8f0fe; /* Cor azulada clara como na imagem */
+    border-radius: 3px;
+    outline: none;
+}
+
+.input-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+/* Botões */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--ipca-blue);
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0077aa;
+}
+
+/* Estilo para Alertas */
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    grid-column: span 2; /* Ocupa as duas colunas */
+}
+
+/* Rodapé da página (fora do card) */
+.page-footer {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 0.8rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}

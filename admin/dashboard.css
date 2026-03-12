@@ -1,0 +1,114 @@
+/* Importar uma fonte moderna e limpa */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+:root {
+    --primary-red: #006633; /* O vermelho característico do IPCA */
+    --dark-grey: #333333;
+    --light-bg: #f4f7f6;
+    --white: #ffffff;
+    --border-color: #e0e0e0;
+    --text-color: #444;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    margin: 0;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Título Principal */
+h1 {
+    color: var(--dark-grey);
+    font-weight: 600;
+    border-bottom: 3px solid var(--primary-red);
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1.8rem;
+}
+
+/* Título de Secção */
+h3 {
+    width: 100%;
+    max-width: 600px;
+    color: var(--primary-red);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+/* Contentor da Lista (Card Style) */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 600px;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+/* Itens da Lista */
+li {
+    border-bottom: 1px solid var(--border-color);
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+/* Links de Navegação */
+li a {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: var(--dark-grey);
+    font-weight: 400;
+    transition: all 0.2s ease;
+}
+
+li a:hover {
+    background-color: #fff5f6;
+    color: var(--primary-red);
+    padding-left: 30px; /* Efeito de slide suave */
+}
+
+/* Estilo para itens "em desenvolvimento" */
+li a:contains("(em desenvolvimento)") {
+    color: #888;
+    font-style: italic;
+}
+
+/* Botão de Logout */
+a[href*="logout.php"] {
+    margin-top: 30px;
+    text-decoration: none;
+    color: var(--white);
+    background-color: var(--dark-grey);
+    padding: 10px 25px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+}
+
+a[href*="logout.php"]:hover {
+    background-color: #000;
+}
+
+/* Responsividade básica */
+@media (max-width: 600px) {
+    body {
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.4rem;
+    }
+}
