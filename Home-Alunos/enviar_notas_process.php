@@ -1,68 +1,77 @@
 <?php
+header('Content-Type: application/json');
 session_start();
-require_once '../config/db.php';
 
-// Verificação de segurança
+// 1. Ligar à Base de Dados
+require_once '../config/db.php'; 
+
+// 2. Importar PHPMailer (Caminho corrigido para a pasta 'phpmailer')
+require 'phpmailer/Exception.php';
+require 'phpmailer/PHPMailer.php';
+require 'phpmailer/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Sessão expirada']);
+    echo json_encode(['success' => false, 'message' => 'Sessão expirada.']);
     exit;
 }
 
 $aluno_id = $_SESSION['user_id'];
 
 try {
-    // 1. Ir buscar os mesmos dados que tens no dashboard
+    // 3. Obter dados do Aluno e Notas
     $stmt = $pdo->prepare("
-        SELECT n.nota, n.epoca, n.ano_letivo, d.nome_disciplina, a.nome, a.email 
-        FROM notas n 
-        JOIN disciplinas d ON n.disciplina_id = d.id 
-        JOIN alunos a ON n.aluno_id = a.id
-        WHERE n.aluno_id = :id
-        ORDER BY n.ano_letivo DESC
+        SELECT a.nome, a.email, n.nota, n.ano_letivo, d.nome_disciplina 
+        FROM alunos a
+        JOIN notas n ON a.id = n.aluno_id
+        JOIN disciplinas d ON n.disciplina_id = d.id
+        WHERE a.id = :id
     ");
     $stmt->execute(['id' => $aluno_id]);
-    $notas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (!$notas) {
-        echo json_encode(['success' => false, 'message' => 'Não foram encontradas notas.']);
-        exit;
+    if (!$dados) {
+        throw new Exception("Não foram encontradas notas para enviar.");
     }
 
-    $nomeAluno = $notas[0]['nome'];
-    $emailDestino = $notas[0]['email'];
+    $nomeAluno = $dados[0]['nome'];
+    $emailDestino = $dados[0]['email'];
 
-    // 2. Construir o corpo do Email em HTML
-    $mensagemHTML = "<h2>Olá, $nomeAluno</h2>";
-    $mensagemHTML .= "<p>Aqui está o seu histórico de notas extraído do portal:</p>";
-    $mensagemHTML .= "<table border='1' cellpadding='10' style='border-collapse: collapse;'>";
-    $mensagemHTML .= "<tr style='background: #007a33; color: white;'><th>Ano</th><th>Disciplina</th><th>Nota</th><th>Época</th></tr>";
+    // 4. Configurar o Email
+    $mail = new PHPMailer(true);
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.gmail.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'davidfloresmacieira@gmail.com';       // <--- TEU GMAIL AQUI
+    $mail->Password   = 'dfmu rbaa uwmo hhrd';         // <--- TUA SENHA DE APP (16 LETRAS)
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port       = 587;
+    $mail->CharSet    = 'UTF-8';
 
-    foreach ($notas as $n) {
-        $corNota = ($n['nota'] >= 10) ? "black" : "red";
-        $mensagemHTML .= "<tr>
-            <td>{$n['ano_letivo']}</td>
-            <td>{$n['nome_disciplina']}</td>
-            <td style='color: $corNota; font-weight: bold;'>{$n['nota']}</td>
-            <td>{$n['epoca']}</td>
-        </tr>";
+    // Remetente e Destinatário
+    $mail->setFrom('davidfloresmacieira@gmail.com', 'Portal IPCA');
+    $mail->addAddress($emailDestino, $nomeAluno);
+
+    // Conteúdo (Tabela de Notas)
+    $mail->isHTML(true);
+    $mail->Subject = "As tuas Notas Académicas - $nomeAluno";
+
+    $html = "<h2>Olá, $nomeAluno</h2><p>Aqui estão as tuas notas:</p>";
+    $html .= "<table border='1' style='border-collapse: collapse; width: 100%;'>";
+    $html .= "<tr style='background: #007a33; color: white;'><th>Disciplina</th><th>Nota</th><th>Ano</th></tr>";
+    
+    foreach ($dados as $linha) {
+        $html .= "<tr><td>{$linha['nome_disciplina']}</td><td>{$linha['nota']}</td><td>{$linha['ano_letivo']}</td></tr>";
     }
-    $mensagemHTML .= "</table><p>Gerado automaticamente em: " . date('d/m/Y H:i') . "</p>";
+    $html .= "</table>";
 
-    // 3. Enviar o Email
-    // Se usares PHPMailer (Recomendado), configurarias aqui. 
-    // Exemplo simplificado com mail() (pode ir para SPAM ou não funcionar em localhost sem config):
-    $to = $emailDestino;
-    $subject = "Histórico de Notas - $nomeAluno";
-    $headers = "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: Portal Académico <noreply@teudominio.com>" . "\r\n";
+    $mail->Body = $html;
 
-    if (mail($to, $subject, $mensagemHTML, $headers)) {
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'O servidor não conseguiu enviar o email.']);
-    }
+    $mail->send();
+    echo json_encode(['success' => true]);
 
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => "Erro: " . $e->getMessage()]);
 }
