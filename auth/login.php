@@ -3,13 +3,13 @@ session_start();
 require_once "../config/db.php";
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-
     $email    = $_POST['email'];
     $password = $_POST['password'];
 
-    $sql = "SELECT utilizadores.*, perfis.nome AS perfil
-            FROM utilizadores
-            JOIN perfis ON utilizadores.perfil_id = perfis.id
+    // JOIN para buscar o nome do perfil e o ID do perfil [cite: 27]
+    $sql = "SELECT utilizadores.*, perfis.nome AS perfil_nome 
+            FROM utilizadores 
+            JOIN perfis ON utilizadores.perfil_id = perfis.id 
             WHERE utilizadores.email = ?";
 
     $stmt = $pdo->prepare($sql);
@@ -17,19 +17,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if($user && password_verify($password, $user['password'])){
+        $_SESSION['user_id']     = $user['id'];
+        $_SESSION['user_nome']   = $user['nome'];
+        $_SESSION['perfil_nome'] = $user['perfil_nome'];
+        $_SESSION['perfil_id']   = $user['perfil_id'];
 
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['perfil']  = $user['perfil'];
+// ... (dentro do bloco if($user && password_verify...))
+$_SESSION['user_id'] = $user['id'];
+$_SESSION['user_nome'] = $user['nome'];
+$_SESSION['perfil_nome'] = $user['perfil_nome']; // Nome do perfil (Aluno, Gestor, etc)
 
-        if($user['perfil'] == 'Admin'){
-            header("Location: ../admin/dashboard.php");
-        }else{
-            header("Location: ../Home-Alunos/dashboard.php");
-        }
+if($user['perfil_nome'] == 'Aluno') {
+    header("Location: ../Home-Alunos/dashboard.php");
+} else if($user['perfil_nome'] == 'Gestor Pedagógico' || $user['perfil_nome'] == 'Admin') {
+    header("Location: ../gestor/dashboard.php");
+} else {
+    header("Location: ../servicos_academicos/dashboard.php");
+}
         exit();
     }
-
-    $erro = "Email ou password inválidos. Por favor tente novamente.";
+    $erro = "Email ou password inválidos.";
 }
 ?>
 <!DOCTYPE html>
@@ -70,7 +77,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 </div>
 
 <?php endif; ?>
-
+<?php if (isset($_GET['registered']) && $_GET['registered'] == 1): ?>
+    <div class="alert-success-aesthetic">
+        <div class="icon-circle">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div class="message-text">
+            <strong>Bem-vindo à comunidade IPCA!</strong>
+            <span>A tua conta foi criada. Já podes iniciar sessão.</span>
+        </div>
+    </div>
+<?php endif; ?>
 <div class="auth-body">
 
 <div>

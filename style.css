@@ -141,3 +141,52 @@ body, html {
     font-size: 0.8rem;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
 }
+
+
+
+
+
+.alert-success-aesthetic {
+    display: flex;
+    align-items: center;
+    background: #e6fffa; /* Verde muito claro */
+    border-left: 5px solid #38b2ac; /* Verde IPCA / Teal */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    animation: slideIn 0.5s ease-out;
+}
+
+.icon-circle {
+    background: #38b2ac;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.message-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.message-text strong {
+    color: #2c7a7b;
+    font-size: 0.95rem;
+}
+
+.message-text span {
+    color: #4a5568;
+    font-size: 0.85rem;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

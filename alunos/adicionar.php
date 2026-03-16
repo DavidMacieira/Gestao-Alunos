@@ -23,13 +23,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $curso_id = $_POST['curso_id'];
 
     // Upload da foto
-    $foto = null;
+    $foto = null;  //criação da variável para evitar erro caso não seja enviado foto
     if(isset($_FILES['foto']) && $_FILES['foto']['error'] == 0){
-        $foto = "uploads/".basename($_FILES['foto']['name']);
+        //o valor 0 signnifca que o upload foi feito com sucesso
+        $foto = "uploads/".basename($_FILES['foto']['name']);   // aqui cria-se o caminho da imagem
         move_uploaded_file($_FILES['foto']['tmp_name'], "../../".$foto);
+
+
+        // 0 - Sem erros
+        //1- O ficheiro é muito grande 
+        //4- Nehum ficheiro enviado
     }
 
-    // Inserir no banco
+    // Inserir na base de dados
     $stmt = $pdo->prepare("INSERT INTO alunos (nome,email,password,morada,data_nascimento,telefone,foto,curso_id) VALUES (?,?,?,?,?,?,?,?)");
     if($stmt->execute([$nome,$email,$password,$morada,$data_nascimento,$telefone,$foto,$curso_id])){
         $sucesso = "Aluno adicionado com sucesso!";
