@@ -2,11 +2,11 @@
 session_start();
 require_once "../config/db.php";
 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email    = $_POST['email'];
     $password = $_POST['password'];
 
-    // JOIN para buscar o nome do perfil e o ID do perfil [cite: 27]
+    // 1. Procurar o utilizador e o seu perfil
     $sql = "SELECT utilizadores.*, perfis.nome AS perfil_nome 
             FROM utilizadores 
             JOIN perfis ON utilizadores.perfil_id = perfis.id 
@@ -16,27 +16,36 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if($user && password_verify($password, $user['password'])){
+    // 2. Verificar se o utilizador existe e a password coincide
+    if ($user && password_verify($password, $user['password'])) {
+        
+        // Definir variáveis de sessão
         $_SESSION['user_id']     = $user['id'];
         $_SESSION['user_nome']   = $user['nome'];
         $_SESSION['perfil_nome'] = $user['perfil_nome'];
         $_SESSION['perfil_id']   = $user['perfil_id'];
 
-// ... (dentro do bloco if($user && password_verify...))
-$_SESSION['user_id'] = $user['id'];
-$_SESSION['user_nome'] = $user['nome'];
-$_SESSION['perfil_nome'] = $user['perfil_nome']; // Nome do perfil (Aluno, Gestor, etc)
-
-if($user['perfil_nome'] == 'Aluno') {
-    header("Location: ../Home-Alunos/dashboard.php");
-} else if($user['perfil_nome'] == 'Gestor Pedagógico' || $user['perfil_nome'] == 'Admin') {
-    header("Location: ../gestor/dashboard.php");
-} else {
-    header("Location: ../servicos_academicos/dashboard.php");
-}
+        // 3. Redirecionamento baseado no perfil (Lógica corrigida)
+        switch ($user['perfil_nome']) {
+            case 'Aluno':
+                header("Location: ../Home-Alunos/dashboard.php");
+                break;
+            case 'Admin':
+                header("Location: ../admin/dashboard.php");
+                break;
+            case 'Gestor Pedagógico':
+                header("Location: ../gestor/dashboard.php");
+                break;
+            default:
+                // Caso seja Serviços Académicos ou outro perfil não listado
+                header("Location: ../servicos_academicos/dashboard.php");
+                break;
+        }
         exit();
+    } else {
+        // Se falhar a password ou o email não existir
+        $erro = "Email ou password inválidos.";
     }
-    $erro = "Email ou password inválidos.";
 }
 ?>
 <!DOCTYPE html>

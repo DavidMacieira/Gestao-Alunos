@@ -1,7 +1,8 @@
 <?php
 session_start();
-if(!isset($_SESSION['perfil']) || $_SESSION['perfil'] != 'Admin'){
-    header("Location: ../index.php");
+// Proteção: Apenas Admin ou Gestor Pedagógico
+if(!isset($_SESSION['user_id']) || !in_array($_SESSION['perfil_nome'], ['Admin', 'Gestor Pedagógico'])){
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -22,21 +23,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-<link rel="stylesheet" href="../global.css">
-<div class="navbar">
-    <img src="../img/logo-ipca.png" alt="IPCA Logo">
-    <h1>Painel de Administração - IPCA</h1>
-    <div style="margin-left:auto;">
-        <a href="../index.php">Home</a>
-        <a href="../auth/logout.php">Logout</a>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Disciplina - IPCA</title>
+    <link rel="stylesheet" href="../global.css">
+</head>
+<body>
+    <div class="navbar">
+        <img src="../img/logo-ipca.png" alt="IPCA Logo" style="height:40px;">
+        <h1>Gestão de Disciplinas - IPCA</h1>
+        <div style="margin-left:auto;">
+            <a href="../gestor/dashboard.php">Dashboard</a>
+            <a href="../auth/logout.php">Logout</a>
+        </div>
     </div>
-</div>
-<h2>Adicionar Disciplina</h2>
-<?php if($erro) echo "<p style='color:red;'>$erro</p>"; ?>
-<?php if($sucesso) echo "<p style='color:green;'>$sucesso</p>"; ?>
 
-<form method="post">
-    Nome da Disciplina: <input type="text" name="nome_disciplina" required><br>
-    Sigla: <input type="text" name="sigla"><br>
-    <button type="submit">Adicionar</button>
-</form>
+    <div style="padding: 20px;">
+        <h2>Adicionar Disciplina</h2>
+        
+        <?php if($erro) echo "<p style='color:red;'>$erro</p>"; ?>
+        <?php if($sucesso) echo "<p style='color:green;'>$sucesso</p>"; ?>
+
+        <form method="post" style="max-width: 400px;">
+            <p>Nome da Disciplina: <input type="text" name="nome_disciplina" required style="width: 100%;"></p>
+            <p>Sigla: <input type="text" name="sigla" style="width: 100%;"></p>
+            <br>
+            <button type="submit" style="padding: 10px 20px;">Adicionar</button>
+            <br><br>
+            <a href="listar.php">Voltar à Lista de Disciplinas</a>
+        </form>
+    </div>
+</body>
+</html>

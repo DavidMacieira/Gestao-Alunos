@@ -1,17 +1,23 @@
 <?php
 session_start();
-if(!isset($_SESSION['perfil']) || $_SESSION['perfil'] != 'Admin'){
-    header("Location: ../index.php");
+// Proteção: Apenas Admin ou Gestor Pedagógico
+if(!isset($_SESSION['user_id']) || !in_array($_SESSION['perfil_nome'], ['Admin', 'Gestor Pedagógico'])){
+    header("Location: ../auth/login.php");
     exit();
 }
 
 require_once "../config/db.php";
 
-$id = $_GET['id'];
+// Verifica se o ID foi passado
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
 
-// eliminar disciplina
-$stmt = $pdo->prepare("DELETE FROM disciplinas WHERE id=?");
-$stmt->execute([$id]);
+    // Eliminar disciplina
+    $stmt = $pdo->prepare("DELETE FROM disciplinas WHERE id=?");
+    $stmt->execute([$id]);
+}
 
+// Redireciona sempre de volta para a lista
 header("Location: listar.php");
 exit();
+?>

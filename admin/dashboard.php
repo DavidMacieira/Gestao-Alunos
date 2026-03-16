@@ -1,8 +1,9 @@
 <?php
 session_start();
-if(!isset($_SESSION['perfil']) || $_SESSION['perfil'] != 'Admin'){
-    header("Location: ../index.php");
-    exit();
+// Verifica se a sessão existe e se o perfil é EXATAMENTE 'Admin'
+if (!isset($_SESSION['user_id']) || $_SESSION['perfil_nome'] !== 'Admin') {
+    header("Location: ../index.php?erro=acesso_restrito_admin");
+    exit;
 }
 ?>
 

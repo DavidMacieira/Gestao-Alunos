@@ -1,7 +1,7 @@
 <?php
 session_start();
-if(!isset($_SESSION['perfil']) || $_SESSION['perfil'] != 'Admin'){
-    header("Location: ../index.php");
+if(!isset($_SESSION['user_id']) || !in_array($_SESSION['perfil_nome'], ['Admin', 'Gestor Pedagógico'])){
+    header("Location: ../index.php?erro=acesso_negado");
     exit();
 }
 
