@@ -411,9 +411,9 @@
                 ['href' => '../gestor/plano_estudos.php',  'label' => 'Plano',       'icon' => '<rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M5 3V1M11 3V1M1 7h14"/>'],
             ],
             'Funcionário' => [
-                ['href' => '../servicos_academicos/dashboard.php', 'label' => 'Dashboard', 'icon' => '<path d="M1 1h6v6H1zM9 1h6v6H9zM1 9h6v6H1zM9 9h6v6H9z"/>'],
-                ['href' => '../servicos_academicos/pedidos.php',   'label' => 'Pedidos',   'icon' => '<path d="M8 1L10 5.5H15L11 8.5L12.5 13L8 10L3.5 13L5 8.5L1 5.5H6Z"/>'],
-                ['href' => '../servicos_academicos/pautas.php',    'label' => 'Pautas',    'icon' => '<rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M5 3V1M11 3V1M1 7h14"/>'],
+                ['href' => '../servicos-academicos/dashboard.php', 'label' => 'Dashboard', 'icon' => '<path d="M1 1h6v6H1zM9 1h6v6H9zM1 9h6v6H1zM9 9h6v6H9z"/>'],
+                ['href' => '../servicos-academicos/pedidos.php',   'label' => 'Pedidos',   'icon' => '<path d="M8 1L10 5.5H15L11 8.5L12.5 13L8 10L3.5 13L5 8.5L1 5.5H6Z"/>'],
+                ['href' => '../servicos-academicos/pautas.php',    'label' => 'Pautas',    'icon' => '<rect x="1" y="3" width="14" height="10" rx="1.5"/><path d="M5 3V1M11 3V1M1 7h14"/>'],
             ],
             default => [],
         };

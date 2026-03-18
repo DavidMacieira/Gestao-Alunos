@@ -1,3 +1,5 @@
 <?php
-echo password_hash('gestor123', PASSWORD_DEFAULT);
+$password = 'funcionario123'; // Muda esta password para a que quiseres
+
+echo password_hash($password, PASSWORD_DEFAULT);
 ?>

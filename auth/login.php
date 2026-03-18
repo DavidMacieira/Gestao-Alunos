@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
             default:
                 // Caso seja Serviços Académicos ou outro perfil não listado
-                header("Location: ../servicos_academicos/dashboard.php");
+                header("Location: ../servicos-academicos/dashboard.php");
                 break;
         }
         exit();
