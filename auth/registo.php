@@ -1,16 +1,13 @@
 <?php
 require_once "../config/db.php";
-
-// 1. INICIALIZAR A VARIÁVEL PARA EVITAR O ERRO DE "UNDEFINED VARIABLE"
 $erro = ""; 
 
-// Procurar cursos para preencher o select no formulário
+// Procurar cursos para o select
 try {
     $stmtCursos = $pdo->query("SELECT id, nome FROM cursos ORDER BY nome ASC");
     $cursos = $stmtCursos->fetchAll();
 } catch (PDOException $e) {
     $cursos = [];
-    $erro = "Erro ao carregar cursos: " . $e->getMessage();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -22,23 +19,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $pdo->beginTransaction();
 
-        // 1. Criar Utilizador (Perfil Aluno = 1) [cite: 87]
+        // 1. Inserir na tabela UTILIZADORES
         $sqlUser = "INSERT INTO utilizadores (nome, email, password, perfil_id) VALUES (?, ?, ?, 1)";
         $stmtUser = $pdo->prepare($sqlUser);
         $stmtUser->execute([$nome, $email, $password]);
+        
+        // Obter o ID que o MySQL acabou de criar
         $novo_user_id = $pdo->lastInsertId();
 
-        // 2. Criar Ficha de Aluno associada com estado 'Rascunho' [cite: 50, 91]
-        $sqlAluno = "INSERT INTO alunos (id, nome, email, password, curso_id, estado) VALUES (?, ?, ?, ?, ?, 'Rascunho')";
+        // 2. Inserir na tabela ALUNOS (apenas o ID e o curso)
+        $sqlAluno = "INSERT INTO alunos (id, curso_id, estado) VALUES (?, ?, 'Rascunho')";
         $stmtAluno = $pdo->prepare($sqlAluno);
-        $stmtAluno->execute([$novo_user_id, $nome, $email, $password, $curso_id]);
+        $stmtAluno->execute([$novo_user_id, $curso_id]);
 
         $pdo->commit();
         header("Location: login.php?registered=1");
         exit();
     } catch (Exception $e) {
         $pdo->rollBack();
-        $erro = "Erro: " . $e->getMessage();
+        $erro = "Erro ao registar: " . $e->getMessage();
     }
 }
 ?>

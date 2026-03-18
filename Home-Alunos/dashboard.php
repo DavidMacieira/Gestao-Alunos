@@ -1,27 +1,43 @@
-    <?php
-    session_start();
+<?php
+session_start();
 
 if (!isset($_SESSION['user_id']) || $_SESSION['perfil_nome'] !== 'Aluno') {
     header("Location: ../auth/login.php");
     exit;
 }
 
-    // Incluir a ligação à base de dados
-    require_once '../config/db.php'; 
+// Incluir a ligação à base de dados
+require_once '../config/db.php'; 
 
-    $aluno_id = $_SESSION['user_id'];
+$aluno_id = $_SESSION['user_id'];
 
-    try {
-        // 1. Obter dados do Aluno e do Curso
-        $stmtAluno = $pdo->prepare("
-            SELECT a.nome, a.email, a.foto, c.nome AS curso_nome 
-            FROM alunos a
-            LEFT JOIN cursos c ON a.curso_id = c.id
-            WHERE a.id = :id
-        ");
-        $stmtAluno->execute(['id' => $aluno_id]);
-        $aluno = $stmtAluno->fetch(PDO::FETCH_ASSOC);
+try {
+    $stmtAluno = $pdo->prepare("
+    SELECT u.nome, u.email, a.foto, a.estado, a.observacoes_validacao, c.nome AS curso_nome 
+    FROM utilizadores u
+    JOIN alunos a ON u.id = a.id
+    LEFT JOIN cursos c ON a.curso_id = c.id
+    WHERE u.id = :id
+    ");
 
+    $stmtAluno->execute(['id' => $aluno_id]);
+    $aluno = $stmtAluno->fetch(PDO::FETCH_ASSOC);
+
+    // Se por algum motivo o aluno não existir na tabela alunos
+    if (!$aluno) {
+        die("Erro: Perfil de aluno não encontrado.");
+    }
+
+    // 2. Obter Notas e Dados das Disciplinas (Esta parte mantém-se igual)
+    $stmtNotas = $pdo->prepare("
+        SELECT n.id as nota_id, n.nota, n.epoca, n.ano_letivo, d.nome_disciplina, d.sigla
+        FROM notas n
+        JOIN disciplinas d ON n.disciplina_id = d.id
+        WHERE n.aluno_id = :id
+        ORDER BY n.ano_letivo DESC, d.nome_disciplina ASC
+    ");
+    $stmtNotas->execute(['id' => $aluno_id]);
+    $notas = $stmtNotas->fetchAll(PDO::FETCH_ASSOC);
         // 2. Obter Notas e Dados das Disciplinas
         $stmtNotas = $pdo->prepare("
             SELECT n.id as nota_id, n.nota, n.epoca, n.ano_letivo, d.nome_disciplina, d.sigla
@@ -323,12 +339,38 @@ if (!isset($_SESSION['user_id']) || $_SESSION['perfil_nome'] !== 'Aluno') {
     </style>
 
     <div class="container">
+        <div class="container">
+    <?php 
+    $statusClasses = [
+        'Rascunho' => 'alert-warning',
+        'Submetida' => 'alert-info',
+        'Aprovada' => 'alert-success',
+        'Rejeitada' => 'alert-danger'
+    ];
+    $statusClass = $statusClasses[$aluno['estado']] ?? 'alert-secondary';
+    ?>
+    
+    <div class="alert <?= $statusClass ?>" style="padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid;">
+        <strong>Estado da Matrícula: <?= htmlspecialchars($aluno['estado']) ?></strong>
+        <?php if ($aluno['estado'] === 'Rascunho'): ?>
+            <p>A sua candidatura ainda não foi submetida. <a href="submeter_matricula.php" class="btn-cert" style="padding: 2px 10px; font-size: 0.8rem;">Submeter Agora</a></p>
+        <?php elseif ($aluno['estado'] === 'Rejeitada'): ?>
+            <p style="color: #721c24;">Motivo: <?= htmlspecialchars($aluno['observacoes_validacao']) ?></p>
+        <?php endif; ?>
+    </div>
         
-        <div class="header-actions">
-            <button class="btn-cert" onclick="imprimirCertificado()">🎓 Baixar Certificado</button>
-            <button class="btn-print" id="btnEnviarEmail" onclick="enviarEmailNotas()">📧 Enviar por Email</button>
-            <button class="btn-print" onclick="window.print()">🖨️ Exportar Notas</button>
-        </div>
+    <div class="header-actions">
+        <a href="inscricao.php" class="btn-print" style="text-decoration: none; background-color: #2c3e50;">📝 Inscrição em Disciplinas</a>
+    <?php if ($aluno['estado'] === 'Aprovada'): ?>
+        <button class="btn-cert" onclick="imprimirCertificado()">🎓 Baixar Certificado</button>
+    <?php else: ?>
+        <button class="btn-cert" style="opacity: 0.5; cursor: not-allowed;" title="Disponível apenas após aprovação">🎓 Certificado Indisponível</button>
+    <?php endif; ?>
+    
+    <button class="btn-print" id="btnEnviarEmail" onclick="enviarEmailNotas()">📧 Enviar por Email</button>
+    <button class="btn-print" onclick="window.print()">🖨️ Exportar Notas</button>
+</div>
+
 
         <div class="grid-top">
             <div class="card">
