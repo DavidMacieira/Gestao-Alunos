@@ -1,9 +1,3 @@
 <?php
-
-$password = "123456";
-
-$hash = password_hash($password, PASSWORD_DEFAULT);
-
-echo $hash;
-
+echo password_hash('gestor123', PASSWORD_DEFAULT);
 ?>
