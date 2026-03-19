@@ -20,7 +20,7 @@ $stmtP = $pdo->prepare("
     SELECT p.*, d.nome_disciplina, d.sigla, u.nome AS criado_por_nome
     FROM pautas p
     JOIN disciplinas d ON d.id = p.disciplina_id
-    LEFT JOIN utilizadores u ON u.id = p.criado_por
+    LEFT JOIN utilizadores u ON u.id = p.criado_por         
     WHERE p.id = ?
 ");
 $stmtP->execute([$pauta_id]);
