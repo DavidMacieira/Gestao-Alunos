@@ -26,7 +26,7 @@ $stmtEstado = $pdo->prepare("SELECT estado FROM alunos WHERE id = ?");
 $stmtEstado->execute([$aluno_id]);
 $estado = $stmtEstado->fetchColumn();
 
-$bloqueado = in_array($estado, ['Submetida', 'Aprovada']);
+$bloqueado = false; // Foto pode ser alterada em qualquer estado
 
 // ── Processar upload ──
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['foto'])) {

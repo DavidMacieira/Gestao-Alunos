@@ -1,5 +1,7 @@
 <?php
-$password = 'admin123'; // Muda esta password para a que quiseres
-
-echo password_hash($password, PASSWORD_DEFAULT);
+echo password_hash('password123', PASSWORD_DEFAULT);
 ?>
+```
+
+
+http://localhost/Gestao-Alunos/gerar_hash.php

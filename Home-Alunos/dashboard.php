@@ -1223,7 +1223,7 @@ button { cursor: pointer; font-family: inherit; }
                         <div class="year-group-header" onclick="toggleYear(this.closest('.year-group'))">
                             <span class="year-group-title"><?= htmlspecialchars($ano) ?></span>
                             <div class="year-group-meta">
-                                <span>Média <?= $s['media'] ?></span>
+                                <span>Média <?= $s['total'] > 0 ? number_format($s['soma'] / $s['total'], 1) : '—' ?></span>
                                 <span style="color:#007a33;">✓ <?= $s['aprovadas'] ?></span>
                                 <span style="color:#9B2B20;">✗ <?= $s['reprovadas'] ?></span>
                                 <svg class="year-arrow" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1537,31 +1537,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     fill: true, tension: 0.35
                 }]
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#1A1A1A',
-                        titleColor: '#EEEEEE',
-                        bodyColor: '#9A9A9A',
-                        padding: 10, cornerRadius: 6,
-                        callbacks: { label: ctx => ' Média: ' + ctx.parsed.y.toFixed(2) }
-                    }
-                },
-                scales: {
-                    y: {
-                        min: 0, max: 20, ticks: { stepSize: 5, color: tickColor, font: { size: 11 } },
-                        grid: { color: gridColor },
-                        border: { display: false }
-                    },
-                    x: {
-                        ticks: { color: tickColor, font: { size: 11 } },
-                        grid: { display: false },
-                        border: { display: false }
-                    }
-                }
-            }
+options: {
+    responsive: true,
+    plugins: {
+        legend: { display: false },
+        tooltip: {
+            backgroundColor: '#1A1A1A',
+            titleColor: '#EEEEEE',
+            bodyColor: '#9A9A9A',
+            padding: 10, cornerRadius: 6,
+            callbacks: { label: ctx => ' Média: ' + ctx.parsed.y.toFixed(2) }
+        }
+    },
+    scales: {
+        y: {
+            min: 0, max: 20,
+            ticks: { stepSize: 5, color: '#9A9A9A', font: { size: 11 } },
+            grid: { color: 'rgba(0,0,0,0.05)' }
+        },
+        x: {
+            ticks: { color: '#9A9A9A', font: { size: 11 } },
+            grid: { display: false }
+        }
+    }
+}
         });
     }
 
