@@ -16,476 +16,604 @@ if(isset($_SESSION['tipo'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Académico | IPCA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Portal Académico — IPCA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         :root {
-            --ipca-green: #006633;
-            --ipca-light-green: #008040;
-            --ipca-pale: #e8f5ee;
+            --green:      #006633;
+            --green-mid:  #00813f;
+            --green-light:#00a84f;
+            --gold:       #c8a84b;
+            --gold-light: #f0d080;
+            --cream:      #faf8f3;
+            --dark:       #0e1a12;
+            --ink:        #1c2b1e;
+            --muted:      #6b7c6e;
+            --card-bg:    #ffffff;
+            --border:     rgba(0,102,51,0.12);
         }
-        * { box-sizing: border-box; }
+
+        html, body { height: 100%; }
+
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: #f0f4f1;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            background-image: radial-gradient(circle at 20% 20%, rgba(0,102,51,0.07) 0%, transparent 50%),
-                              radial-gradient(circle at 80% 80%, rgba(0,128,64,0.07) 0%, transparent 50%);
+            font-family: 'Sora', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            overflow-x: hidden;
         }
-        .hero-section {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-        }
-        .main-container {
-            background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0,102,51,0.12), 0 4px 16px rgba(0,0,0,0.06);
-            max-width: 980px;
-            width: 100%;
-            overflow: hidden;
-        }
-        .left-panel {
-            padding: 50px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(160deg, #f7fbf8 0%, #eaf4ee 100%);
-        }
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            font-family: 'Nunito', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 900;
-            color: var(--ipca-green);
-            margin-bottom: 2rem;
-            letter-spacing: 3px;
-            align-self: flex-start;
-        }
-        .brand-logo i { margin-right: 10px; font-size: 1.8rem; }
-        .quote-text {
-            font-family: 'Nunito', sans-serif;
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #555;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        /* ─── CHARACTER ─── */
-        .character-wrapper {
-            position: relative;
-            width: 220px;
-            height: 270px;
-        }
-        #student-svg { width: 100%; height: 100%; overflow: visible; }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50%       { transform: translateY(-10px); }
-        }
-        .character-body-group { animation: float 3s ease-in-out infinite; transform-origin: center bottom; }
-
-        @keyframes wave {
-            0%   { transform: rotate(0deg); }
-            20%  { transform: rotate(-35deg); }
-            45%  { transform: rotate(10deg); }
-            65%  { transform: rotate(-28deg); }
-            85%  { transform: rotate(5deg); }
-            100% { transform: rotate(0deg); }
-        }
-        .arm-right { transform-origin: 4px 2px; }
-        .arm-right.waving { animation: wave 0.85s ease-in-out forwards; }
-
-        .speech-bubble {
-            position: absolute;
-            top: 0px;
-            right: -90px;
-            background: white;
-            border: 2.5px solid var(--ipca-green);
-            border-radius: 14px 14px 14px 4px;
-            padding: 8px 14px;
-            font-family: 'Nunito', sans-serif;
-            font-size: 0.82rem;
-            font-weight: 800;
-            color: var(--ipca-green);
-            white-space: nowrap;
-            opacity: 0;
-            transform: scale(0.8) translateY(5px);
-            transition: opacity 0.25s, transform 0.25s;
+        /* ── NOISE TEXTURE OVERLAY ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
             pointer-events: none;
-            z-index: 10;
-            box-shadow: 0 4px 12px rgba(0,102,51,0.15);
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            background-size: 200px;
+            opacity: 0.6;
         }
-        .speech-bubble.visible { opacity: 1; transform: scale(1) translateY(0); }
 
-        /* ─── RIGHT PANEL ─── */
-        .right-panel {
-            background: #fff;
-            padding: 50px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-left: 1px solid rgba(0,102,51,0.08);
-        }
-        .auth-card {
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,102,51,0.10);
-            width: 100%;
-            max-width: 340px;
-            overflow: hidden;
-        }
-        .card-header-curved {
-            background: linear-gradient(135deg, var(--ipca-green) 0%, var(--ipca-light-green) 100%);
-            height: 100px;
-            border-radius: 20px 20px 0 0;
+        /* ── LAYOUT ── */
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             position: relative;
+            z-index: 1;
         }
-        .card-header-curved::after {
+
+        /* ── LEFT PANEL ── */
+        .left {
+            background: var(--green);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 3rem 3.5rem;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        /* Geometric background shapes */
+        .left::before {
             content: '';
             position: absolute;
-            bottom: -1px; left: 0; right: 0;
-            height: 30px;
-            background: white;
-            border-radius: 50% 50% 0 0 / 30px 30px 0 0;
-        }
-        .avatar-circle {
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            width: 76px; height: 76px;
+            top: -120px; right: -120px;
+            width: 420px; height: 420px;
             border-radius: 50%;
+            background: radial-gradient(circle, rgba(200,168,75,0.18) 0%, transparent 70%);
+        }
+        .left::after {
+            content: '';
+            position: absolute;
+            bottom: -80px; left: -80px;
+            width: 320px; height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,168,79,0.25) 0%, transparent 70%);
+        }
+
+        /* Diagonal stripe accent */
+        .left .stripe {
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 45%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                -55deg,
+                rgba(255,255,255,0.015) 0px,
+                rgba(255,255,255,0.015) 1px,
+                transparent 1px,
+                transparent 18px
+            );
+            pointer-events: none;
+        }
+
+        /* ── LOGO AREA ── */
+        .logo-block {
+            position: relative;
+            z-index: 2;
+        }
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            padding: 0.55rem 1.1rem;
+            backdrop-filter: blur(8px);
+            margin-bottom: 3rem;
+        }
+        .logo-badge img {
+            height: 28px;
+            filter: brightness(0) invert(1);
+        }
+        .logo-badge span {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        /* ── HERO TEXT ── */
+        .hero-text {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .eyebrow {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .eyebrow::before {
+            content: '';
+            display: inline-block;
+            width: 28px; height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+        .hero-heading {
+            font-family: 'DM Serif Display', serif;
+            color: #ffffff;
+            font-size: clamp(2.6rem, 4vw, 3.8rem);
+            line-height: 1.08;
+            letter-spacing: -0.01em;
+        }
+        .hero-heading em {
+            font-style: italic;
+            color: var(--gold-light);
+        }
+        .hero-sub {
+            margin-top: 1.6rem;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.7;
+            max-width: 380px;
+        }
+
+        /* ── STATS ROW ── */
+        .stats-row {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 3.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.1rem;
+            color: #fff;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.5);
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            margin-top: 0.25rem;
+        }
+        .stat-divider {
+            width: 1px;
+            background: rgba(255,255,255,0.15);
+            margin: 0;
+        }
+
+        /* ── CAMPUS TAGS ── */
+        .campus-strip {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .campus-tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: rgba(255,255,255,0.55);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 4px;
+            padding: 0.25rem 0.6rem;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .campus-tag:hover { color: var(--gold-light); border-color: var(--gold); }
+
+        /* ── RIGHT PANEL ── */
+        .right {
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 16px rgba(0,102,51,0.2);
-            padding: 10px;
-            z-index: 2;
+            padding: 2.5rem;
+            background: var(--cream);
+            position: relative;
         }
-        .avatar-circle img { max-width: 100%; border-radius: 50%; }
-        .card-body-auth { padding: 55px 30px 30px; text-align: center; }
-        .card-body-auth h5 {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 800;
-            color: #333;
-            margin-bottom: 1.5rem;
+
+        /* Subtle radial gradient background */
+        .right::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 60%; height: 50%;
+            background: radial-gradient(ellipse at top right, rgba(0,102,51,0.06) 0%, transparent 65%);
+            pointer-events: none;
         }
-        .btn-auth {
-            padding: 13px 20px;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 700;
-            border-radius: 12px;
-            transition: all 0.3s;
+
+        /* ── AUTH CARD ── */
+        .auth-card {
             width: 100%;
-            margin-bottom: 14px;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-top {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .ipca-mark {
+            width: 72px; height: 72px;
+            border-radius: 20px;
+            background: var(--green);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,102,51,0.25);
+            overflow: hidden;
+        }
+        .ipca-mark img {
+            width: 54px;
+            filter: brightness(0) invert(1);
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.9rem;
+            color: var(--dark);
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+        .card-title em {
+            font-style: italic;
+            color: var(--green);
+        }
+        .card-desc {
+            margin-top: 0.6rem;
+            font-size: 0.88rem;
+            color: var(--muted);
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* ── DIVIDER ── */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .section-divider::before,
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+        .section-divider span {
+            font-size: 0.72rem;
+            color: var(--muted);
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-primary-ipca {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: var(--green);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Sora', sans-serif;
             font-size: 0.95rem;
-            display: block;
+            font-weight: 600;
             text-decoration: none;
+            cursor: pointer;
+            transition: background 0.22s, transform 0.18s, box-shadow 0.22s;
+            box-shadow: 0 4px 20px rgba(0,102,51,0.22);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary-ipca::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 60%);
+        }
+        .btn-primary-ipca:hover {
+            background: var(--green-mid);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(0,102,51,0.3);
+            color: #fff;
+        }
+        .btn-primary-ipca:active { transform: translateY(0); }
+
+        .btn-secondary-ipca {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: transparent;
+            color: var(--ink);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: border-color 0.22s, background 0.22s, transform 0.18s;
+            margin-top: 1rem;
+        }
+        .btn-secondary-ipca:hover {
+            border-color: var(--green);
+            background: rgba(0,102,51,0.04);
+            color: var(--green);
+            transform: translateY(-2px);
+        }
+        .btn-secondary-ipca:active { transform: translateY(0); }
+
+        /* Icon inside buttons */
+        .btn-icon {
+            width: 20px; height: 20px;
+            opacity: 0.8;
+        }
+
+        /* ── FOOTER NOTE ── */
+        .footer-note {
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
             text-align: center;
         }
-        .btn-login {
-            background: linear-gradient(135deg, var(--ipca-green), var(--ipca-light-green));
-            color: white; border: none;
-            box-shadow: 0 4px 14px rgba(0,102,51,0.3);
+        .footer-note p {
+            font-size: 0.76rem;
+            color: var(--muted);
+            line-height: 1.6;
         }
-        .btn-login:hover { color: white; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,102,51,0.35); }
-        .btn-register {
-            background: transparent;
-            border: 2.5px solid var(--ipca-green);
-            color: var(--ipca-green);
+        .footer-note a {
+            color: var(--green);
+            text-decoration: none;
+            font-weight: 600;
         }
-        .btn-register:hover { background: var(--ipca-pale); color: var(--ipca-green); transform: translateY(-2px); }
+        .footer-note a:hover { text-decoration: underline; }
 
-        /* ─── FOOTER ─── */
-        footer { background-color: #1a1a1a; color: white; padding: 30px 0 10px; font-size: 0.82rem; }
-        .footer-logo { max-height: 48px; }
-        .location-item { margin-bottom: 15px; line-height: 1.5; }
-        .location-item i { color: #66bb88; margin-bottom: 4px; display: block; }
-        .location-item strong { font-size: 0.78rem; }
-        .social-icons a { color: white; font-size: 1.4rem; margin-left: 14px; text-decoration: none; transition: color 0.2s; }
-        .social-icons a:hover { color: #66bb88; }
-        .bottom-bar { border-top: 1px solid rgba(255,255,255,0.12); margin-top: 24px; padding-top: 18px; }
+        /* ── FEATURE PILLS ── */
+        .feature-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1.2rem;
+        }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--muted);
+            background: rgba(0,102,51,0.06);
+            border-radius: 50px;
+            padding: 0.3rem 0.75rem;
+            border: 1px solid rgba(0,102,51,0.1);
+        }
+        .pill svg { flex-shrink: 0; }
+
+        /* ── ENTER ANIMATIONS ── */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(24px);
+            animation: fadeUp 0.65s cubic-bezier(0.22,1,0.36,1) forwards;
+        }
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.22s; }
+        .delay-3 { animation-delay: 0.34s; }
+        .delay-4 { animation-delay: 0.46s; }
+        .delay-5 { animation-delay: 0.58s; }
+        .delay-6 { animation-delay: 0.70s; }
+        .delay-7 { animation-delay: 0.82s; }
+
+        /* Left panel slides in from left */
+        .left > * {
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+        }
+        .left .logo-block  { animation-delay: 0.05s; }
+        .left .hero-text   { animation-delay: 0.15s; }
+        .left .stats-row   { animation-delay: 0.28s; }
+        .left .campus-strip{ animation-delay: 0.4s; }
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
-            .left-panel { padding: 30px 20px; }
-            .brand-logo { align-self: center; }
-            .speech-bubble { right: -70px; }
+            .page { grid-template-columns: 1fr; }
+            .left {
+                min-height: auto;
+                padding: 2.5rem 2rem;
+            }
+            .stats-row { gap: 1.5rem; }
+            .right { padding: 2rem 1.5rem; }
         }
     </style>
 </head>
 <body>
+<div class="page">
 
-<main class="hero-section">
-    <div class="main-container">
-        <div class="row g-0">
+    <!-- ═══ LEFT ═══ -->
+    <div class="left">
+        <div class="stripe"></div>
 
-            <div class="col-md-6 left-panel">
-                <div class="brand-logo">
-                    <i class="fas fa-layer-group"></i> IPCA
+        <div class="logo-block">
+            <div class="logo-badge">
+                <img src="../img/logo-ipca.png"
+                     onerror="this.replaceWith(document.createTextNode('IPCA'))"
+                     alt="IPCA">
+                <span>Portal Académico</span>
+            </div>
+        </div>
+
+        <div class="hero-text">
+            <p class="eyebrow">Instituto Politécnico do Cávado e do Ave</p>
+            <h1 class="hero-heading">
+                O teu futuro<br>começa <em>aqui.</em>
+            </h1>
+            <p class="hero-sub">
+                Acede aos teus horários, notas, inscrições e muito mais — tudo num só lugar, pensado para ti.
+            </p>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <span class="stat-num">6+</span>
+                <span class="stat-label">Polos</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-num">40+</span>
+                <span class="stat-label">Cursos</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-num">7k+</span>
+                <span class="stat-label">Estudantes</span>
+            </div>
+        </div>
+
+        <div class="campus-strip">
+            <span class="campus-tag">Barcelos</span>
+            <span class="campus-tag">Braga</span>
+            <span class="campus-tag">Famalicão</span>
+            <span class="campus-tag">Guimarães</span>
+            <span class="campus-tag">Esposende</span>
+            <span class="campus-tag">Vila Verde</span>
+        </div>
+    </div>
+
+    <!-- ═══ RIGHT ═══ -->
+    <div class="right">
+        <div class="auth-card">
+
+            <div class="card-top fade-up delay-1">
+                <div class="ipca-mark">
+                    <img src="img/logo-ipca.png"
+                         onerror="this.style.display='none'"
+                         alt="IPCA">
                 </div>
-                <p class="quote-text">Instituto Politécnico do Cávado e do Ave</p>
+                <h2 class="card-title">Bem&#8209;vindo<br>de <em>volta.</em></h2>
+                <p class="card-desc">Entra na tua conta ou cria uma nova para começares.</p>
+            </div>
 
-                <div class="character-wrapper">
-                    <div class="speech-bubble" id="bubble">Olá! 👋</div>
-
-                    <svg id="student-svg" viewBox="0 0 200 265" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Shadow -->
-                        <ellipse cx="100" cy="252" rx="40" ry="7" fill="rgba(0,0,0,0.09)"/>
-
-                        <g class="character-body-group" id="bodyGroup">
-
-                            <!-- LEGS -->
-                            <rect x="80" y="196" width="16" height="40" rx="8" fill="#2c2c54"/>
-                            <ellipse cx="88" cy="236" rx="13" ry="7" fill="#1a1a2e"/>
-                            <rect x="104" y="196" width="16" height="40" rx="8" fill="#2c2c54"/>
-                            <ellipse cx="112" cy="236" rx="13" ry="7" fill="#1a1a2e"/>
-
-                            <!-- BODY -->
-                            <rect x="70" y="128" width="60" height="72" rx="14" fill="#006633"/>
-                            <!-- Collar -->
-                            <polygon points="100,137 91,148 100,144 109,148" fill="#f5c892"/>
-                            <!-- IPCA badge -->
-                            <rect x="82" y="158" width="36" height="18" rx="4" fill="rgba(255,255,255,0.15)"/>
-                            <text x="100" y="171" text-anchor="middle" font-family="Nunito,sans-serif" font-size="10" font-weight="900" fill="white" letter-spacing="1">IPCA</text>
-
-                            <!-- LEFT ARM (static) -->
-                            <g transform="translate(70,142)">
-                                <rect x="-20" y="0" width="15" height="38" rx="7.5" fill="#006633"/>
-                                <ellipse cx="-12" cy="43" rx="9" ry="9" fill="#f5c892"/>
-                                <line x1="-8"  y1="49" x2="-8"  y2="53" stroke="#e0a870" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="-12" y1="50" x2="-12" y2="54" stroke="#e0a870" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="-16" y1="49" x2="-16" y2="53" stroke="#e0a870" stroke-width="2" stroke-linecap="round"/>
-                            </g>
-
-                            <!-- RIGHT ARM (waves) -->
-                            <g id="arm-right" class="arm-right" transform="translate(130,142)">
-                                <rect x="5" y="0" width="15" height="38" rx="7.5" fill="#006633"/>
-                                <ellipse cx="12" cy="43" rx="9" ry="9" fill="#f5c892"/>
-                                <line x1="8"  y1="49" x2="8"  y2="53" stroke="#e0a870" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="12" y1="50" x2="12" y2="54" stroke="#e0a870" stroke-width="2" stroke-linecap="round"/>
-                                <line x1="16" y1="49" x2="16" y2="53" stroke="#e0a870" stroke-width="2" stroke-linecap="round"/>
-                            </g>
-
-                            <!-- NECK -->
-                            <rect x="93" y="117" width="14" height="15" rx="6" fill="#f5c892"/>
-
-                            <!-- HEAD GROUP -->
-                            <g id="headGroup">
-                                <!-- Head -->
-                                <ellipse cx="100" cy="96" rx="36" ry="37" fill="#f5c892"/>
-                                <!-- Ears -->
-                                <ellipse cx="64" cy="98" rx="7" ry="10" fill="#f5c892"/>
-                                <ellipse cx="64" cy="98" rx="4" ry="6"  fill="#e8a878"/>
-                                <ellipse cx="136" cy="98" rx="7" ry="10" fill="#f5c892"/>
-                                <ellipse cx="136" cy="98" rx="4" ry="6"  fill="#e8a878"/>
-
-                                <!-- Hair -->
-                                <ellipse cx="100" cy="64" rx="36" ry="16" fill="#2c1810"/>
-                                <rect x="64" y="63" width="72" height="16" fill="#2c1810"/>
-                                <path d="M64,70 Q59,80 62,92" stroke="#2c1810" stroke-width="8" fill="none" stroke-linecap="round"/>
-                                <path d="M136,70 Q141,80 138,92" stroke="#2c1810" stroke-width="8" fill="none" stroke-linecap="round"/>
-
-                                <!-- Graduation cap -->
-                                <rect x="70" y="55" width="60" height="11" rx="3" fill="#1a1a2e"/>
-                                <polygon points="100,42 132,57 100,66 68,57" fill="#1a1a2e"/>
-                                <line x1="132" y1="57" x2="138" y2="76" stroke="#f0c040" stroke-width="2.5" stroke-linecap="round"/>
-                                <circle cx="138" cy="78" r="4.5" fill="#f0c040"/>
-
-                                <!-- EYEBROWS -->
-                                <g id="eyebrows">
-                                    <path class="eyebrow-left"  d="M81,86 Q88,82 95,85" stroke="#2c1810" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                                    <path class="eyebrow-right" d="M105,85 Q112,82 119,86" stroke="#2c1810" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                                </g>
-
-                                <!-- EYES -->
-                                <g id="eyesGroup">
-                                    <ellipse cx="89" cy="98" rx="9.5" ry="9.5" fill="white"/>
-                                    <ellipse id="iris-left" cx="89" cy="99" rx="5.5" ry="6" fill="#3a2010"/>
-                                    <ellipse cx="90.5" cy="98" rx="2.5" ry="3" fill="black"/>
-                                    <ellipse cx="91.5" cy="96.5" rx="1.5" ry="1.5" fill="white"/>
-
-                                    <ellipse cx="111" cy="98" rx="9.5" ry="9.5" fill="white"/>
-                                    <ellipse id="iris-right" cx="111" cy="99" rx="5.5" ry="6" fill="#3a2010"/>
-                                    <ellipse cx="112.5" cy="98" rx="2.5" ry="3" fill="black"/>
-                                    <ellipse cx="113.5" cy="96.5" rx="1.5" ry="1.5" fill="white"/>
-                                </g>
-
-                                <!-- NOSE -->
-                                <ellipse cx="100" cy="109" rx="4" ry="2.5" fill="#e0966a"/>
-
-                                <!-- MOUTH -->
-                                <path id="mouth" d="M91,117 Q100,124 109,117" stroke="#c0785a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-
-                                <!-- Cheeks -->
-                                <ellipse cx="77" cy="108" rx="9" ry="5.5" fill="rgba(255,100,100,0.13)"/>
-                                <ellipse cx="123" cy="108" rx="9" ry="5.5" fill="rgba(255,100,100,0.13)"/>
-                            </g>
-
-                        </g>
+            <div class="fade-up delay-2">
+                <a href="auth/login.php" class="btn-primary-ipca">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                        <polyline points="10 17 15 12 10 7"/>
+                        <line x1="15" y1="12" x2="3" y2="12"/>
                     </svg>
-                </div>
+                    Iniciar Sessão
+                </a>
             </div>
 
-            <!-- RIGHT -->
-            <div class="col-md-6 right-panel">
-                <div class="auth-card">
-                    <div class="card-header-curved">
-                        <div class="avatar-circle">
-                            <img src="img/logo-ipca.png" alt="IPCA"
-                                 onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-                        </div>
-                    </div>
-                    <div class="card-body-auth">
-                        <h5>Bem-vindo ao Portal</h5>
-                        <a href="auth/login.php"   id="btn-login"    class="btn btn-auth btn-login">Iniciar Sessão</a>
-                        <a href="auth/registo.php" id="btn-register" class="btn btn-auth btn-register">Criar Conta</a>
-                    </div>
-                </div>
+            <div class="fade-up delay-3">
+                <a href="auth/registo.php" class="btn-secondary-ipca">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <line x1="19" y1="8" x2="19" y2="14"/>
+                        <line x1="22" y1="11" x2="16" y2="11"/>
+                    </svg>
+                    Criar Conta
+                </a>
+            </div>
+
+            <div class="section-divider fade-up delay-4">
+                <span>O que podes fazer</span>
+            </div>
+
+            <div class="feature-pills fade-up delay-5">
+                <span class="pill">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Notas
+                </span>
+                <span class="pill">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    Horários
+                </span>
+                <span class="pill">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    Inscrições
+                </span>
+                <span class="pill">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Mensagens
+                </span>
+                <span class="pill">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Presenças
+                </span>
+                <span class="pill">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.4a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91A16 16 0 0 0 14 14.82l.84-.84a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 21.92 16z"/></svg>
+                    Suporte
+                </span>
+            </div>
+
+            <div class="footer-note fade-up delay-6">
+                <p>
+                    Problemas de acesso? Contacta os <a href="mailto:geral@ipca.pt">Serviços Académicos</a>.<br>
+                    <span style="font-size:0.7rem; color:#aaa;">© IPCA — Instituto Politécnico do Cávado e do Ave</span>
+                </p>
             </div>
 
         </div>
     </div>
-</main>
 
-<footer>
-    <div class="container">
-        <div class="row align-items-start">
-            <div class="col-md-4 mb-4">
-                <img src="img/logo-rodape" alt="IPCA" class="footer-logo mb-3" onerror="this.style.display='none'">
-            </div>
-            <div class="col-md-8 text-md-end mb-4">
-                <img src="img/logo-rodape" alt="Parceiros" style="max-height:60px;" onerror="this.style.display='none'">
-            </div>
-        </div>
-        <div class="row text-center mt-4">
-            <div class="col-md-2 location-item"><i class="fas fa-map-marker-alt"></i><strong>CAMPUS DO IPCA | BARCELOS</strong><br>Vila Frescaínha S. Martinho<br>4750-810 Barcelos</div>
-            <div class="col-md-2 location-item"><i class="fas fa-map-marker-alt"></i><strong>POLO DE BRAGA</strong><br>Av. Dr. Francisco Pires Gonçalves<br>4715-558 Braga</div>
-            <div class="col-md-2 location-item"><i class="fas fa-map-marker-alt"></i><strong>POLO DE FAMALICÃO</strong><br>Avenida de Tibães, nº1199<br>Vale S.Cosme<br>4770-568 V. N. Famalicão</div>
-            <div class="col-md-2 location-item"><i class="fas fa-map-marker-alt"></i><strong>POLO DE GUIMARÃES</strong><br>Avepark - Zona Industrial da Gandra<br>4806-909 Caldas das Taipas</div>
-            <div class="col-md-2 location-item"><i class="fas fa-map-marker-alt"></i><strong>POLO DE ESPOSENDE</strong><br>Rua Sra. da Saúde<br>4740-289 Esposende</div>
-            <div class="col-md-2 location-item"><i class="fas fa-map-marker-alt"></i><strong>POLO DE VILA VERDE</strong><br>Rua do Conhecimento<br>4730-575 Soutelo</div>
-        </div>
-        <div class="row bottom-bar align-items-center">
-            <div class="col-md-6"><span>(+351) 253 802 190 | geral@ipca.pt</span></div>
-            <div class="col-md-6 text-md-end">
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="text-center mt-4"><small>Copyright © IPCA - Instituto Politécnico do Cávado e do Ave</small></div>
-    </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-(function() {
-    const arm      = document.getElementById('arm-right');
-    const irisL    = document.getElementById('iris-left');
-    const irisR    = document.getElementById('iris-right');
-    const eyebrows = document.getElementById('eyebrows');
-    const mouth    = document.getElementById('mouth');
-    const bubble   = document.getElementById('bubble');
-    const btnLogin = document.getElementById('btn-login');
-    const btnReg   = document.getElementById('btn-register');
-
-    let idleTimer;
-
-    function setLook(dx, dy) {
-        irisL.setAttribute('cx', 89  + dx);  irisL.setAttribute('cy', 99  + dy);
-        irisR.setAttribute('cx', 111 + dx);  irisR.setAttribute('cy', 99  + dy);
-    }
-    function resetLook() { setLook(0, 0); }
-
-    function wave() {
-        arm.classList.remove('waving');
-        void arm.offsetWidth;
-        arm.classList.add('waving');
-    }
-
-    function setMouth(d) { mouth.setAttribute('d', d); }
-    const MOUTH_NORMAL = 'M91,117 Q100,124 109,117';
-    const MOUTH_BIG    = 'M87,115 Q100,129 113,115';
-    const MOUTH_GENTLE = 'M89,117 Q100,125 111,117';
-
-    function showBubble(text) { bubble.textContent = text; bubble.classList.add('visible'); }
-    function hideBubble()     { bubble.classList.remove('visible'); }
-
-    function raiseBrows(y) {
-        eyebrows.querySelectorAll('path').forEach(p => { p.style.transform = `translateY(${y}px)`; });
-    }
-
-    // ── Hover: Iniciar Sessão ──
-    btnLogin.addEventListener('mouseenter', () => {
-        clearInterval(idleTimer);
-        setLook(5, 0);
-        raiseBrows(-4);
-        setMouth(MOUTH_BIG);
-        wave();
-        showBubble('Bem-vindo! 😊');
-    });
-    btnLogin.addEventListener('mouseleave', () => {
-        resetLook();
-        raiseBrows(0);
-        setMouth(MOUTH_NORMAL);
-        hideBubble();
-        startIdle();
-    });
-
-    // ── Hover: Criar Conta ──
-    btnReg.addEventListener('mouseenter', () => {
-        clearInterval(idleTimer);
-        setLook(5, 2);
-        raiseBrows(-2);
-        setMouth(MOUTH_GENTLE);
-        wave();
-        showBubble('Junta-te a nós! 🎓');
-    });
-    btnReg.addEventListener('mouseleave', () => {
-        resetLook();
-        raiseBrows(0);
-        setMouth(MOUTH_NORMAL);
-        hideBubble();
-        startIdle();
-    });
-
-    // ── Idle: occasional look-around ──
-    function startIdle() {
-        idleTimer = setInterval(() => {
-            if (document.querySelector('.btn-auth:hover')) return;
-            const dirs = [{dx:-3,dy:-1},{dx:3,dy:0},{dx:0,dy:2},{dx:0,dy:0},{dx:-2,dy:1}];
-            const d = dirs[Math.floor(Math.random() * dirs.length)];
-            setLook(d.dx, d.dy);
-            setTimeout(resetLook, 900);
-        }, 2800);
-    }
-
-    // CSS blink
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes blink {
-            0%,88%,100% { transform: scaleY(1); }
-            93%          { transform: scaleY(0.08); }
-        }
-        #eyesGroup { animation: blink 4.5s ease-in-out infinite; transform-origin: center 98px; }
-    `;
-    document.head.appendChild(style);
-
-    startIdle();
-})();
-</script>
+</div>
 </body>
 </html>

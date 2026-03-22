@@ -969,7 +969,7 @@ button { cursor: pointer; font-family: inherit; }
             </div>
             <div class="topbar-right">
                 <?php if ($estado === 'Aprovada'): ?>
-                    <button class="btn btn-sm" onclick="printCert()">
+                    <button class="btn btn-sm" onclick="window.open('certificado.php', '_blank')">
                         <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="1" width="10" height="12" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="9" y2="8"/></svg>
                         Certificado
                     </button>
